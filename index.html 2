@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>ToDo List</title>
+        <style>*{
+    margin: 0px;
+    padding: 0px;
+}
+body{
+    background-color:rgb(175, 241, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.cardy{
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px ;
+    box-shadow: 0 10px 25px rgb(33, 33, 33);
+}
+h1{
+    color: rgb(220, 177, 249);
+    text-align: center;
+    margin: 10px;
+}
+input{
+    padding:10px ;
+    border-radius: 10px;
+    border: 2px solid gray;
+    padding-right: 150px;
+}
+#ADD{
+    background-color: rgb(151, 227, 255);
+    padding: 10px;
+    width: 75px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#ADD.hover{
+    background-color: rgb(182, 228, 244);
+}
+table{
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 25px;
+}
+th{
+    background-color: rgb(220, 177, 249);
+    border: 2px solid #ddd;
+    font-size: 20px;
+    text-align: center;
+    color: white;
+    padding : 10px;
+}
+.done{
+    background-color: rgb(151, 227, 255);
+    padding: 10px;
+    margin: 10px;
+    width: 75px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+} 
+.delete{
+    background-color: rgb(142, 0, 0);
+    padding: 10px;
+    width: 75px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+td{
+    border: 2px solid #ddd;
+    font-size: 20px;
+    text-align: center;
+    color: black;
+    padding: 10px;
+}</style>
+    </head>
+    <body>
+        <div class="cardy">
+            <h1>🗒ToDo List</h1>
+            <input type="text" id="task"/>
+            <button onclick="addtask()" id="ADD">Add</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tablebody">
+
+                </tbody>
+            </table>
+        </div>
+        <script>display();
+function addtask(){
+    let input = document.getElementById("task");
+    let task = input.value;
+    if (task === "") return;
+    
+    let tasks = JSON.parse(window.localStorage.getItem("tasks")) || [];
+    
+    tasks.push({
+        text:task,
+        done:false,
+    });
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    input.value = "";
+    display();
+}
+
+function display(){
+    let tasks = JSON.parse(window.localStorage.getItem("tasks")) || [];
+    let tablebody = document.getElementById("tablebody");
+    tablebody.innerHTML = "";
+    for (let i = 0; i < tasks.length; i++){
+        tablebody.innerHTML += `
+                        <tr>
+                            <td style="text-decoration:${tasks[i].done == true ? "line-through" : "none"}">${tasks[i].text}</td>
+                            <td>
+                            <button onclick="done(${i})" class="done">${tasks[i].done == true ? "Undo" : "Done"}</button>
+                            <button onclick="remove(${i})" class="delete">Delete</button>
+                            </td>
+                        </tr>
+    `;
+    }
+}
+function remove(index){
+    let tasks = JSON.parse(window.localStorage.getItem("tasks")) || [];
+    tasks.splice(index, 1);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    display();
+}
+function done(index){
+    let tasks = JSON.parse(window.localStorage.getItem("tasks")) || [];
+    tasks[index].done = !  tasks[index].done;
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    display()
+}</script>
+    </body>
+</html>
